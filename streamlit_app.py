@@ -1,13 +1,3 @@
-import pip
-def install(package):
-    pip.main(['install', package])
-libs = ["boto3","langchain"]
-for lib in libs:
-    try:
-        __import__(lib)
-    except ImportError:
-        print("Installing " + lib)
-        install(lib)
 import streamlit as st
 import boto3
 from langchain.memory import ConversationBufferMemory
