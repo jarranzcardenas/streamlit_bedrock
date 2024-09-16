@@ -135,7 +135,7 @@ conversation = ConversationChain(
 
 
 with st.form('chatbot'):
-    text = st.text_area('Enter text:', 'Uasa este campo apra realizar la pregunta que desees contestación')
+    text = st.text_area('Enter text:')
     submitted = st.form_submit_button('Submit')
     if not aws_access_key_id:
         st.warning('Please enter your AWS Access Key!', icon='⚠')
