@@ -1,12 +1,19 @@
+import pip
+def install(package):
+    pip.main(['install', package])
+libs = ["boto3","langchain"]
+for lib in libs:
+    try:
+        __import__(lib)
+    except ImportError:
+        print("Installing " + lib)
+        install(lib)
 import streamlit as st
 import boto3
-import sys
-from io import StringIO
 from langchain.memory import ConversationBufferMemory
 from langchain.llms.bedrock import Bedrock
 from langchain.chains import ConversationChain
 from langchain.prompts import PromptTemplate
-import warnings
 
 # promts templates
 claude_prompt = PromptTemplate.from_template("""
