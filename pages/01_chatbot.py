@@ -123,7 +123,8 @@ class BedrockLLM:
 
 context_memory = ConversationBufferMemory()
 
-st.title('🦜🔗 Chatbot Bedrock')
+st.title("💬 Chatbot")
+st.caption("🚀 Chatbot asistido por Bedrock")
 region_name=st.sidebar.text_input('AWS Region', value="us-east-1")
 aws_access_key_id= st.sidebar.text_input('AWS Access Key')
 aws_secret_access_key= st.sidebar.text_input('AWS Secret Access Key')
@@ -132,16 +133,19 @@ conversation = ConversationChain(
     llm=BedrockLLM.get_bedrock_llm_claude(), verbose=True, memory=context_memory
 )
 
+if "messages" not in st.session_state:
+    st.session_state["messages"] = [{"role": "assistant", "content": "En que puedo ayudarte?"}]
 
-
-with st.form('chatbot'):
-    text = st.text_area('Enter text:')
-    submitted = st.form_submit_button('Submit')
+for msg in st.session_state.messages:
+    st.chat_message(msg["role"]).write(msg["content"])
+if prompt := st.chat_input():
     if not aws_access_key_id:
         st.warning('Please enter your AWS Access Key!', icon='⚠')
-        if not aws_secret_access_key:
-            st.warning('Please enter your AWS Secret Access Key!', icon='⚠')
-    
-    if submitted and aws_secret_access_key and aws_secret_access_key:
-        st.info(conversation.predict(input= text)) 
-    
+        st.stop()
+        
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    st.chat_message("user").write(prompt)
+    response = conversation.predict(input= prompt)
+    msg = response.choices[0].message.content
+    st.session_state.messages.append({"role": "assistant", "content": msg})
+    st.chat_message("assistant").write(msg)
